@@ -25,11 +25,11 @@ class _CityScreenState extends State<CityScreen> {
             children: <Widget>[
               Align(
                 alignment: Alignment.topLeft,
-                child: TextButton(
+                child: IconButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios,
                     size: 50.0,
                   ),
@@ -51,6 +51,7 @@ class _CityScreenState extends State<CityScreen> {
                 onPressed: () {
                   Navigator.pop(context, cityName);
                 },
+                style: TextButton.styleFrom(primary: Colors.white),
                 child: Text(
                   'Get Weather',
                   style: kButtonTextStyle,
