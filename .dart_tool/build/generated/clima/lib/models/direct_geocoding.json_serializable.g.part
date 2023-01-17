@@ -1,0 +1,19 @@
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+DirectGeocoding _$DirectGeocodingFromJson(Map<String, dynamic> json) =>
+    DirectGeocoding(
+      name: json['name'] as String,
+      lat: (json['lat'] as num).toDouble(),
+      lon: (json['lon'] as num).toDouble(),
+      country: json['country'] as String,
+    );
+
+Map<String, dynamic> _$DirectGeocodingToJson(DirectGeocoding instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'country': instance.country,
+      'lat': instance.lat,
+      'lon': instance.lon,
+    };
