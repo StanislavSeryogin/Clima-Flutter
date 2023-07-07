@@ -17,7 +17,7 @@ class _LocationScreenState extends State<LocationScreen> {
   var temperature;
   var weatherIcon;
   var cityName;
-  String weatherMassage;
+  late String weatherMassage;
 
   @override
   void initState() {
