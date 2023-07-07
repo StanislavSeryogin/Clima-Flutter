@@ -51,7 +51,7 @@ class _CityScreenState extends State<CityScreen> {
                 onPressed: () {
                   Navigator.pop(context, cityName);
                 },
-                style: TextButton.styleFrom(primary: Colors.white),
+                style: TextButton.styleFrom(foregroundColor: Colors.white),
                 child: Text(
                   'Get Weather',
                   style: kButtonTextStyle,
