@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:clima/blocs/weather/weather_bloc.dart';
 import 'package:clima/model/weather_model.dart';
 import 'package:clima/utilities/constants.dart';
 import 'package:equatable/equatable.dart';
@@ -9,8 +8,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 part 'weather_event.dart';
+part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
+  
   WeatherBloc() : super(WeatherInitial()) {
     on<FetchWeather>(_fetchWeather);
     on<SearchWeather>(_searchWeather);

@@ -1,5 +1,5 @@
 
-import 'package:clima/blocs/weather/weather_bloc.dart';
+import 'package:clima/bloc/weather/weather_bloc.dart';
 import 'package:clima/pages/weather_display.dart';
 
 import 'package:flutter/material.dart';

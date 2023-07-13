@@ -1,4 +1,4 @@
-import 'package:clima/blocs/weather/weather_bloc.dart';
+import 'package:clima/bloc/weather/weather_bloc.dart';
 import 'package:clima/pages/weather_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
