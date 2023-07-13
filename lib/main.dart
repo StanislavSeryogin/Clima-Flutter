@@ -1,11 +1,11 @@
-import 'package:clima/services/location.dart';
+import 'package:clima/blocs/weather/weather_bloc.dart';
+import 'package:clima/pages/weather_page.dart';
 import 'package:flutter/material.dart';
-import 'package:clima/pages/loading_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Location location = Location();
-  await location.getCurrentLocation();
+
   runApp(MyApp());
 }
 
@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: LoadingScreen(),
+      home: BlocProvider(
+        create: (context) => WeatherBloc(),
+        child: WeatherPage(),
+      ),
     );
   }
 }

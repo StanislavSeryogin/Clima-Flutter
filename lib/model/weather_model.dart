@@ -1,27 +1,36 @@
 import 'package:equatable/equatable.dart';
 
 class WeatherModel extends Equatable {
-  final int condition;
-  final String weatherIcon;
-  final String message;
+  final String city;
+  final String country;
+  final String main;
+  final String description;
+  final String icon;
+  final double temperature;
 
   WeatherModel({
-    required this.condition,
-    required this.weatherIcon,
-    required this.message,
+    required this.city,
+    required this.country,
+    required this.main,
+    required this.description,
+    required this.icon,
+    required this.temperature,
   });
 
-  @override
-  List<Object?> get props => [condition, weatherIcon, message];
-
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
+    final weather = json['weather'][0];
     return WeatherModel(
-      condition: json['weather'][0]['id'],
-      weatherIcon: json['weather'][0]['icon'],
-      message: json['weather'][0]['main'],
+      city: json['name'],
+      country: json['sys']['country'],
+      main: weather['main'],
+      description: weather['description'],
+      icon: weather['icon'],
+      temperature: json['main']['temp'].toDouble(),
     );
   }
 
+  double get tempInCelsius => temperature - 273.15;
+
   @override
-  bool get stringify => true;
+  List<Object?> get props => [city, country, main, description, icon, temperature];
 }
