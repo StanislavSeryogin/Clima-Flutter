@@ -8,6 +8,8 @@ class WeatherDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        '${weather.city}, ${weather.country}, ${weather.tempInCelsius}, ${weather.description}, ${weather.main}, ${weather.icon}');
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

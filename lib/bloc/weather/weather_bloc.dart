@@ -1,18 +1,16 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:clima/model/weather_model.dart';
-import 'package:clima/utilities/constants.dart';
+import 'package:clima/repositotys/weather_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
 
 part 'weather_event.dart';
 part 'weather_state.dart';
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  
-  WeatherBloc() : super(WeatherInitial()) {
+  final WeatherRepository weatherRepository;
+
+  WeatherBloc({required this.weatherRepository}) : super(WeatherInitial()) {
     on<FetchWeather>(_fetchWeather);
     on<SearchWeather>(_searchWeather);
   }
@@ -26,7 +24,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      final weather = await _fetchWeatherData(
+      final weather = await weatherRepository.fetchWeatherData(
         position.latitude,
         position.longitude,
       );
@@ -42,7 +40,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   ) async {
     emit(WeatherLoading());
     try {
-      final weather = await _fetchWeatherByCityName(event.cityName);
+      final weather =
+          await weatherRepository.fetchWeatherByCityName(event.cityName);
       emit(WeatherLoaded(weather: weather));
     } catch (e) {
       emit(WeatherError());
@@ -51,49 +50,36 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Stream<WeatherState> mapEventToState(WeatherEvent event) async* {
     if (event is FetchWeather) {
-      yield WeatherLoading();
-      try {
-        final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-        final weather = await _fetchWeatherData(
-          position.latitude,
-          position.longitude,
-        );
-        yield WeatherLoaded(weather: weather);
-      } catch (e) {
-        yield WeatherError();
-      }
+      yield* _mapFetchWeatherToState(event);
     } else if (event is SearchWeather) {
-      yield WeatherLoading();
-      try {
-        final weather = await _fetchWeatherByCityName(event.cityName);
-        yield WeatherLoaded(weather: weather);
-      } catch (e) {
-        yield WeatherError();
-      }
+      yield* _mapSearchWeatherToState(event);
     }
   }
 
-  Future<WeatherModel> _fetchWeatherData(
-      double latitude, double longitude) async {
-    final url =
-        '$kOpenWeatherMapURL?lat=$latitude&lon=$longitude&appid=$kApiKey';
-
-    final response = await http.get(Uri.parse(url));
-    final jsonData = json.decode(response.body);
-
-    final weather = WeatherModel.fromJson(jsonData);
-    return weather;
+  Stream<WeatherState> _mapFetchWeatherToState(FetchWeather event) async* {
+    yield WeatherLoading();
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      final weather = await weatherRepository.fetchWeatherData(
+        position.latitude,
+        position.longitude,
+      );
+      yield WeatherLoaded(weather: weather);
+    } catch (e) {
+      yield WeatherError();
+    }
   }
 
-  Future<WeatherModel> _fetchWeatherByCityName(String cityName) async {
-    final url = '$kOpenWeatherMapURL?q=$cityName&appid=$kApiKey';
-
-    final response = await http.get(Uri.parse(url));
-    final jsonData = json.decode(response.body);
-
-    final weather = WeatherModel.fromJson(jsonData);
-    return weather;
+  Stream<WeatherState> _mapSearchWeatherToState(SearchWeather event) async* {
+    yield WeatherLoading();
+    try {
+      final weather =
+          await weatherRepository.fetchWeatherByCityName(event.cityName);
+      yield WeatherLoaded(weather: weather);
+    } catch (e) {
+      yield WeatherError();
+    }
   }
 }
