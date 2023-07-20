@@ -1,12 +1,17 @@
-
+import 'package:clima/utilities/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:clima/bloc/weather/weather_bloc.dart';
 import 'package:clima/pages/weather_display.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+class WeatherPage extends StatefulWidget {
+  @override
+  _WeatherPageState createState() => _WeatherPageState();
+}
 
-class WeatherPage extends StatelessWidget {
+class _WeatherPageState extends State<WeatherPage> {
   final TextEditingController _textEditingController = TextEditingController();
+  bool isTextFieldVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,23 +27,36 @@ class WeatherPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      labelText: 'City Name',
+                Visibility(
+                  visible: !isTextFieldVisible,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTextFieldVisible = true;
+                      });
+                    },
+                    child: Icon(Icons.search),
+                  ),
+                ),
+                Visibility(
+                  visible: isTextFieldVisible,
+                  child: Expanded(
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: kTextFieldInputDecoration,
+                      onSubmitted: (value) {
+                        setState(() {
+                          isTextFieldVisible = false;
+                        });
+                        final cityName = _textEditingController.text;
+                        weatherBloc.add(SearchWeather(cityName: cityName));
+                      },
                     ),
                   ),
                 ),
                 SizedBox(width: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    final cityName = _textEditingController.text;
-                    weatherBloc.add(SearchWeather(cityName: cityName));
-                  },
-                  child: Text('Search'),
-                ),
               ],
             ),
           ),
